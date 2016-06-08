@@ -107,10 +107,14 @@ loadjs(['/path/to/foo.js', '/path/to/bar.js'], 'foobar', {
 
 
 // add a failure callback
-loadjs(['/path/to/foo.js', '/path/to/bar.js'],
-       'foobar',
-       function() { /* foo.js & bar.js loaded */ },
-       function(pathsNotFound) { /* at least one path didn't load */ });
+loadjs(['/path/to/foo.js', '/path/to/bar.js'], 'foobar', {
+  success: function() {
+    /* foo.js & bar.js loaded */
+  },
+  fail: function(pathsNotFound) {
+    /* at least one path didn't load */
+  }
+});
 
 
 // execute a callback after bundle finishes loading
@@ -119,7 +123,7 @@ loadjs(['/path/to/foo.js', '/path/to/bar.js'], 'foobar');
 loadjs.ready('foobar', {
   success: function() {
     // foo.js & bar.js loaded
-  }a
+  }
 });
 
 
