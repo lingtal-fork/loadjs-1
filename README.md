@@ -20,8 +20,13 @@ Here's an example of what you can do with LoadJS:
 loadjs(['/path/to/foo.js', '/path/to/bar.js'], 'foobar');
 
 // execute code elsewhere when the bundle has loaded
-loadjs.ready('foobar', function() {
-  // foo.js & bar.js loaded
+loadjs.ready('foobar', {
+  success: function() {
+    // foo.js & bar.js loaded
+  },
+  fail: function(depsNotFound) {
+    // either foo.js or bar.js failed to load
+  }
 });
 ```
 
@@ -40,8 +45,10 @@ var loadjs = require('loadjs');
 
 loadjs(['/path/to/foo.js', '/path/to/bar.js'], 'foobar');
 
-loadjs.ready('foobar', function() {
-  // foo.js & bar.js loaded
+loadjs.ready('foobar', {
+  success: function() {
+    // foo.js & bar.js loaded
+  }
 });
 ```
 
@@ -64,28 +71,38 @@ LoadJS also detects script failures from AdBlock Plus and Ghostery in:
 
 ```javascript
 // load a single file
-loadjs('/path/to/foo.js', function() {
-  // foo.js loaded
+loadjs('/path/to/foo.js', {
+  success: function() {
+    // foo.js loaded
+  }
 });
 
 
 // load multiple files (in parallel)
-loadjs(['/path/to/foo.js', '/path/to/bar.js'], function() {
-  // foo.js & bar.js loaded
+loadjs(['/path/to/foo.js', '/path/to/bar.js'], {
+  success: function() {
+    // foo.js & bar.js loaded
+  }
 });
 
 
 // load multiple files (in series)
-loadjs('/path/to/foo.js', function() {
-  loadjs('/path/to/bar.js', function() {
-    // foo.js loaded then bar.js loaded
-  });
+loadjs('/path/to/foo.js', {
+  success: function() {
+    loadjs('/path/to/bar.js', {
+      success: function() {
+        // foo.js loaded then bar.js loaded
+      }
+    });
+  }
 });
 
 
 // add a bundle id
-loadjs(['/path/to/foo.js', '/path/to/bar.js'], 'foobar', function() {
-  // foo.js & bar.js loaded
+loadjs(['/path/to/foo.js', '/path/to/bar.js'], 'foobar', {
+  success: function() {
+    // foo.js & bar.js loaded
+  }
 });
 
 
@@ -99,8 +116,10 @@ loadjs(['/path/to/foo.js', '/path/to/bar.js'],
 // execute a callback after bundle finishes loading
 loadjs(['/path/to/foo.js', '/path/to/bar.js'], 'foobar');
 
-loadjs.ready('foobar', function() {
-  // foo.js & bar.js loaded
+loadjs.ready('foobar', {
+  success: function() {
+    // foo.js & bar.js loaded
+  }a
 });
 
 
@@ -109,11 +128,15 @@ loadjs('/path/to/foo.js', 'foo');
 loadjs('/path/to/bar.js', 'bar');
 
 loadjs
-  .ready('foo', function() {
-    // foo.js loaded
+  .ready('foo', {
+    success: function() {
+      // foo.js loaded
+    }
   })
-  .ready('bar', function() {
-    // bar.js loaded
+  .ready('bar', {
+    success: function() {
+      // bar.js loaded
+    }
   });
 
 
@@ -124,30 +147,35 @@ loadjs(['/path/to/thunkor.js', '/path/to/thunky.js'], 'thunk');
 
 
 // wait for multiple depdendencies
-loadjs.ready(['foo', 'bar', 'thunk'],
-             function() {
-               // foo.js & bar.js & thunkor.js & thunky.js loaded
-             },
-             function(depsNotFound) {
-               if (depsNotFound.indexOf('foo') > -1) {};  // foo failed
-               if (depsNotFound.indexOf('bar') > -1) {};  // bar failed
-               if (depsNotFound.indexOf('thunk') > -1) {};  // thunk failed
-             });
+loadjs.ready(['foo', 'bar', 'thunk'], {
+  success: function() {
+    // foo.js & bar.js & thunkor.js & thunky.js loaded
+  },
+  fail: function(depsNotFound) {
+    if (depsNotFound.indexOf('foo') > -1) {};  // foo failed
+    if (depsNotFound.indexOf('bar') > -1) {};  // bar failed
+    if (depsNotFound.indexOf('thunk') > -1) {};  // thunk failed
+  }
+});
 
 
 // use .done() for more control
-loadjs.ready('my-awesome-plugin', function() {
-  myAwesomePlugin();
+loadjs.ready('my-awesome-plugin', {
+  success: function() {
+    myAwesomePlugin();
+  }
 });
 
-loadjs.ready('jquery', function() {
-  // plugin requires jquery
-  window.myAwesomePlugin = function() {
-    if (!window.jQuery) throw "jQuery is missing!";
-  };
+loadjs.ready('jquery', {
+  success: function() {
+    // plugin requires jquery
+    window.myAwesomePlugin = function() {
+      if (!window.jQuery) throw "jQuery is missing!";
+    };
 
-  // plugin is done loading
-  loadjs.done('my-awesome-plugin');
+    // plugin is done loading
+    loadjs.done('my-awesome-plugin');
+  }
 });
 ```
 

@@ -79,9 +79,8 @@ function publish(bundleId, pathsNotFound) {
  * @param {string} path - The file path
  * @param {Function} callbackFn - The callback function
  */
-function loadScript(path, callbackFn) {
-  var doc = document,
-      s = doc.createElement('script');
+function loadScript(path, callbackFn, target) {
+  var s = target.createElement('script');
 
   s.src = path;
   
@@ -91,7 +90,7 @@ function loadScript(path, callbackFn) {
   };
   
   // add to document
-  doc.head.appendChild(s);
+  target.head.appendChild(s);
 }
 
 
@@ -100,7 +99,7 @@ function loadScript(path, callbackFn) {
  * @param {string[]} paths - The file paths
  * @param {Function} callbackFn - The callback function
  */
-function loadScripts(paths, callbackFn) {
+function loadScripts(paths, callbackFn, target) {
   // listify paths
   paths = paths.push ? paths : [paths];
   
@@ -123,7 +122,7 @@ function loadScripts(paths, callbackFn) {
   };
   
   // load scripts
-  while (i--) loadScript(paths[i], fn);
+  while (i--) loadScript(paths[i], fn, target);
 }
 
 
@@ -134,15 +133,14 @@ function loadScripts(paths, callbackFn) {
  * @param {Function} [arg2] - The success or fail callback
  * @param {Function} [arg3] - The fail callback
  */
-function loadjs(paths, arg1, arg2, arg3) {
-  var bundleId, successFn, failFn;
-  
-  // bundleId
-  if (arg1 && !arg1.call) bundleId = arg1;
-  
-  // successFn, failFn
-  successFn = bundleId ? arg2 : arg1;
-  failFn = bundleId ? arg3 : arg2;
+function loadjs(paths, arg1, arg2) {
+  var bundleId, args;
+
+  // bundleId (if string)
+  if (arg1.trim) bundleId = arg1;
+
+  // args is last item or empty dictionary by default
+  args = (bundleId ? arg2 : arg1) || {};
   
   // throw error if bundle is already defined
   if (bundleId) {
@@ -155,12 +153,12 @@ function loadjs(paths, arg1, arg2, arg3) {
   
   // load scripts
   loadScripts(paths, function(pathsNotFound) {
-    if (pathsNotFound.length) (failFn || devnull)(pathsNotFound);
-    else (successFn || devnull)();
+    if (pathsNotFound.length) (args.fail || devnull)(pathsNotFound);
+    else (args.success || devnull)();
     
     // publish bundle load event
     publish(bundleId, pathsNotFound);
-  });
+  }, args.target || document);
 }
 
 
@@ -170,12 +168,12 @@ function loadjs(paths, arg1, arg2, arg3) {
  * @param {Function} [successFn] - Success callback
  * @param {Function} [failFn] - Fail callback
  */
-loadjs.ready = function (deps, successFn, failFn) {
+loadjs.ready = function (deps, args) {
   // subscribe to bundle load event
   subscribe(deps, function(depsNotFound) {
     // execute callbacks
-    if (depsNotFound.length) (failFn || devnull)(depsNotFound);
-    else (successFn || devnull)();
+    if (depsNotFound.length) (args.fail || devnull)(depsNotFound);
+    else (args.success || devnull)();
   });
   
   return loadjs;
