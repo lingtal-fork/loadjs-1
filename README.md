@@ -46,12 +46,8 @@ var loadjs = require('loadjs');
 loadjs(['/path/to/foo.js', '/path/to/bar.js'], 'foobar');
 
 loadjs.ready('foobar', {
-  success: function() {
-    // foo.js & bar.js loaded
-  },
-  fail: function(depsNotFound) {
-    // foobar bundle load failed
-  }
+  success: function() { /* foo.js & bar.js loaded */ },
+  fail: function(depsNotFound) {/* foobar bundle load failed */}
 });
 ```
 
@@ -75,34 +71,26 @@ LoadJS also detects script failures from AdBlock Plus and Ghostery in:
 ```javascript
 // load a single file
 loadjs('/path/to/foo.js', {
-  success: function() {
-    // foo.js loaded
-  }
+  success: function() { /* foo.js loaded */}
 });
 
 
 // load multiple files (in parallel)
 loadjs(['/path/to/foo.js', '/path/to/bar.js'], {
-  success: function() {
-    // foo.js & bar.js loaded
-  }
+  success: function() { /* foo.js & bar.js loaded */ }
 });
 
 
 // fetch files in parallel and load in series
 loadjs(['/path/to/foo.js', '/path/to/bar.js'], {
-  success: function() {
-    // foo.js and bar.js loaded in series
-  },
+  success: function() { /* foo.js and bar.js loaded in series */ },
   async: false
 });
 
 
 // add a bundle id
 loadjs(['/path/to/foo.js', '/path/to/bar.js'], 'foobar', {
-  success: function() {
-    // foo.js & bar.js loaded
-  }
+  success: function() { /* foo.js & bar.js loaded */ }
 });
 
 
@@ -117,9 +105,7 @@ loadjs(['/path/to/foo.js', '/path/to/bar.js'], 'foobar', {
 loadjs(['/path/to/foo.js', '/path/to/bar.js'], 'foobar');
 
 loadjs.ready('foobar', {
-  success: function() {
-    // foo.js & bar.js loaded
-  }
+  success: function() { /* foo.js & bar.js loaded */ }
 });
 
 
@@ -129,14 +115,10 @@ loadjs('/path/to/bar.js', 'bar');
 
 loadjs
   .ready('foo', {
-    success: function() {
-      // foo.js loaded
-    }
+    success: function() { /* foo.js loaded */ }
   })
   .ready('bar', {
-    success: function() {
-      // bar.js loaded
-    }
+    success: function() { /* bar.js loaded */ }
   });
 
 
