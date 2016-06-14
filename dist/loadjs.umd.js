@@ -88,11 +88,12 @@ function publish(bundleId, pathsNotFound) {
  * @param {string} path - The file path
  * @param {Function} callbackFn - The callback function
  */
-function loadScript(path, callbackFn) {
+function loadScript(path, callbackFn, async) {
   var doc = document,
       s = doc.createElement('script');
 
   s.src = path;
+  s.async = (async === undefined) ? true : async;
   
   s.onload = s.onerror = s.onbeforeload = function(ev) {
     // execute callback
@@ -113,7 +114,7 @@ function loadScripts(paths, callbackFn) {
   // listify paths
   paths = paths.push ? paths : [paths];
   
-  var i = paths.length, numWaiting = i, pathsNotFound = [], fn;
+  var numWaiting = paths.length, i = -numWaiting, pathsNotFound = [], fn;
   
   // define callback function
   fn = function(path, result, defaultPrevented) {
@@ -132,7 +133,7 @@ function loadScripts(paths, callbackFn) {
   };
   
   // load scripts
-  while (i--) loadScript(paths[i], fn);
+  while (i++) loadScript(paths[-i], fn);
 }
 
 
@@ -169,7 +170,7 @@ function loadjs(paths, arg1, arg2) {
 
     // publish bundle load event
     publish(bundleId, pathsNotFound);
-  });
+  }, args.async);
 }
 
 
