@@ -114,7 +114,7 @@ function loadScripts(paths, callbackFn) {
   // listify paths
   paths = paths.push ? paths : [paths];
   
-  var numWaiting = paths.length, i = -numWaiting, pathsNotFound = [], fn;
+  var numWaiting = paths.length, x = numWaiting, pathsNotFound = [], fn, i;
   
   // define callback function
   fn = function(path, result, defaultPrevented) {
@@ -133,7 +133,7 @@ function loadScripts(paths, callbackFn) {
   };
   
   // load scripts
-  while (i++) loadScript(paths[-i], fn);
+  for (i=0; i <= x - 1; i++) loadScript(paths[i], fn);
 }
 
 

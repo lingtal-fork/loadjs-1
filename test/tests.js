@@ -207,6 +207,46 @@ describe('LoadJS tests', function() {
   });
 
 
+  it('should support async false', function(done) {
+    var numCompleted = 0,
+        numTests = 20,
+        paths = ['assets/asyncfalse1.js', 'assets/asyncfalse2.js'];
+
+    // run tests sequentially
+    var testFn = function(paths) {
+      loadjs(paths, {
+        success: function() {
+          var f1 = paths[0].replace('assets/', '');
+          var f2 = paths[1].replace('assets/', '');
+
+          // check load order
+          assert.isTrue(pathsLoaded[f1]);
+          assert.isFalse(pathsLoaded[f2]);
+
+          // increment tests
+          numCompleted += 1;
+
+          if (numCompleted === numTests) {
+            // exit
+            done();
+          } else {
+            // reset register
+            pathsLoaded = {};
+
+            // run test again
+            paths.reverse();
+            testFn(paths);
+          }
+        },
+        async: false
+      });
+    }
+
+    // run tests
+    testFn(paths);
+  });
+
+
   // Un-'x' this for testing ad blocked scripts.
   //   Ghostery: Disallow "Google Adservices"
   //   AdBlock Plus: Add "www.googletagservices.com/tag/js/gpt.js" as a
