@@ -247,6 +247,28 @@ describe('LoadJS tests', function() {
   });
 
 
+  it('should support iframes as targets', function(done) {
+    // create iframe
+    var iframeEl = document.createElement('iframe');
+    iframeEl.src = 'assets/iframe.html';
+    iframeEl.style.display = 'none';
+    document.body.appendChild(iframeEl);
+
+    var iframeWin = iframeEl.contentWindow;
+
+    // add pathsLoaded to iframe globals
+    iframeWin.pathsLoaded = {};
+
+    loadjs(['assets/file1.js'], {
+      success: function() {
+        assert.equal(iframeWin.pathsLoaded['file1.js'], true);
+        done();
+      },
+      target: iframeWin.document
+    });
+  });
+
+
   // Un-'x' this for testing ad blocked scripts.
   //   Ghostery: Disallow "Google Adservices"
   //   AdBlock Plus: Add "www.googletagservices.com/tag/js/gpt.js" as a
