@@ -110,7 +110,7 @@ function loadScript(path, callbackFn, async) {
  * @param {string[]} paths - The file paths
  * @param {Function} callbackFn - The callback function
  */
-function loadScripts(paths, callbackFn) {
+function loadScripts(paths, callbackFn, async) {
   // listify paths
   paths = paths.push ? paths : [paths];
   
@@ -133,7 +133,7 @@ function loadScripts(paths, callbackFn) {
   };
   
   // load scripts
-  for (i=0; i <= x - 1; i++) loadScript(paths[i], fn);
+  for (i=0; i <= x - 1; i++) loadScript(paths[i], fn, async);
 }
 
 
