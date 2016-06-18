@@ -81,12 +81,9 @@ function publish(bundleId, pathsNotFound) {
  */
 function loadFile(path, callbackFn, async) {
   var doc = document,
-      isCss,
       e;
 
   if (/\.css$/.test(path)) {
-    isCss = true;
-
     // css
     e = doc.createElement('link');
     e.rel = 'stylesheet';
@@ -103,7 +100,7 @@ function loadFile(path, callbackFn, async) {
 
     // treat empty stylesheets as failures (to get around lack of onerror
     // support in IE
-    if (isCss && e.sheet && !e.sheet.cssRules.length) result = 'e';
+    if (e.sheet && !e.sheet.cssRules.length) result = 'e';
 
     // execute callback
     callbackFn(path, result, ev.defaultPrevented);
@@ -165,7 +162,7 @@ function loadjs(paths, arg1, arg2) {
   // throw error if bundle is already defined
   if (bundleId) {
     if (bundleId in bundleIdCache) {
-      throw "LoadJS bundle def";
+      throw new Error("LoadJS");
     } else {
       bundleIdCache[bundleId] = true;
     }

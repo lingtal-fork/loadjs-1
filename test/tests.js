@@ -254,7 +254,7 @@ describe('LoadJS tests', function() {
         loadjs(['assets/file1.js'], 'bundle3');
       };
       
-      expect(fn).to.throw(Error, "LoadJS: Bundle already defined");
+      expect(fn).to.throw(Error, "LoadJS");
     });
     
     

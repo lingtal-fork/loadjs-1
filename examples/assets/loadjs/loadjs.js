@@ -76,18 +76,15 @@ function publish(bundleId, pathsNotFound) {
 
 
 /**
- * Load individual JavaScript file.
+ * Load individual file.
  * @param {string} path - The file path
  * @param {Function} callbackFn - The callback function
  */
-function loadScript(path, callbackFn, async) {
+function loadFile(path, callbackFn, async) {
   var doc = document,
-      isCss,
       e;
 
   if (/\.css$/.test(path)) {
-    isCss = true;
-
     // css
     e = doc.createElement('link');
     e.rel = 'stylesheet';
@@ -104,7 +101,7 @@ function loadScript(path, callbackFn, async) {
 
     // treat empty stylesheets as failures (to get around lack of onerror
     // support in IE
-    if (isCss && e.sheet && !e.sheet.cssRules.length) result = 'e';
+    if (e.sheet && !e.sheet.cssRules.length) result = 'e';
 
     // execute callback
     callbackFn(path, result, ev.defaultPrevented);
@@ -116,11 +113,11 @@ function loadScript(path, callbackFn, async) {
 
 
 /**
- * Load multiple JavaScript files.
+ * Load multiple files.
  * @param {string[]} paths - The file paths
  * @param {Function} callbackFn - The callback function
  */
-function loadScripts(paths, callbackFn, async) {
+function loadFiles(paths, callbackFn, async) {
   // listify paths
   paths = paths.push ? paths : [paths];
   
@@ -143,7 +140,7 @@ function loadScripts(paths, callbackFn, async) {
   };
   
   // load scripts
-  for (i=0; i < x; i++) loadScript(paths[i], fn, async);
+  for (i=0; i < x; i++) loadFile(paths[i], fn, async);
 }
 
 
@@ -166,14 +163,14 @@ function loadjs(paths, arg1, arg2) {
   // throw error if bundle is already defined
   if (bundleId) {
     if (bundleId in bundleIdCache) {
-      throw new Error("LoadJS: Bundle already defined");
+      throw new Error("LoadJS");
     } else {
       bundleIdCache[bundleId] = true;
     }
   }
   
   // load scripts
-  loadScripts(paths, function(pathsNotFound) {
+  loadFiles(paths, function(pathsNotFound) {
     // success and fail callbacks
     if (pathsNotFound.length) (args.fail || devnull)(pathsNotFound);
     else (args.success || devnull)();
