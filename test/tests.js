@@ -217,6 +217,19 @@ describe('LoadJS tests', function() {
     });
 
 
+    it('should call fail callback on empty css', function(done) {
+      loadjs(['assets/emptycss'], {
+        success: function() {
+          throw "Executed success callback";
+        },
+        fail: function(pathsNotFound) {
+          assert.equal(pathsNotFound.length, 1);
+          done();
+        }
+      });
+    });
+
+
     // teardown
     return after(function() {
       // remove test div

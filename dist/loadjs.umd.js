@@ -90,9 +90,12 @@ function publish(bundleId, pathsNotFound) {
  */
 function loadScript(path, callbackFn, async) {
   var doc = document,
+      isCss,
       e;
 
   if (/\.css$/.test(path)) {
+    isCss = true;
+
     // css
     e = doc.createElement('link');
     e.rel = 'stylesheet';
@@ -105,8 +108,14 @@ function loadScript(path, callbackFn, async) {
   }
   
   e.onload = e.onerror = e.onbeforeload = function(ev) {
+    var result = ev.type[0];
+
+    // treat empty stylesheets as failures (to get around lack of onerror
+    // support in IE
+    if (isCss && e.sheet && !e.sheet.cssRules.length) result = 'e';
+
     // execute callback
-    callbackFn(path, ev.type[0], ev.defaultPrevented);
+    callbackFn(path, result, ev.defaultPrevented);
   };
   
   // add to document
