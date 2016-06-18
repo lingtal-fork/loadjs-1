@@ -62,7 +62,7 @@ LoadJS also detects script failures from AdBlock Plus and Ghostery in:
  * Safari
  * Chrome
 
-Note that LoadJS treats empty CSS files as load failures (as a workaround for the lack of support for `<link>` onerror events in IE9-11).
+Note: LoadJS treats empty CSS files as load failures (as a workaround for the lack of support for `<link>` onerror events in IE9-11).
 
 ## Documentation
 
