@@ -90,18 +90,27 @@ function publish(bundleId, pathsNotFound) {
  */
 function loadScript(path, callbackFn, async) {
   var doc = document,
-      s = doc.createElement('script');
+      e;
 
-  s.src = path;
-  s.async = (async === undefined) ? true : async;
+  if (/\.css$/.test(path)) {
+    // css
+    e = doc.createElement('link');
+    e.rel = 'stylesheet';
+    e.href = path;
+  } else {
+    // javascript
+    e = doc.createElement('script');
+    e.src = path;
+    e.async = (async === undefined) ? true : async;
+  }
   
-  s.onload = s.onerror = s.onbeforeload = function(ev) {
+  e.onload = e.onerror = e.onbeforeload = function(ev) {
     // execute callback
     callbackFn(path, ev.type[0], ev.defaultPrevented);
   };
   
   // add to document
-  doc.head.appendChild(s);
+  doc.head.appendChild(e);
 }
 
 
@@ -133,7 +142,7 @@ function loadScripts(paths, callbackFn, async) {
   };
   
   // load scripts
-  for (i=0; i <= x - 1; i++) loadScript(paths[i], fn, async);
+  for (i=0; i < x; i++) loadScript(paths[i], fn, async);
 }
 
 
