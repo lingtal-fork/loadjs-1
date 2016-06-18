@@ -49,7 +49,7 @@ loadjs.ready('foobar', {
 
 ## Browser Support
 
- * IE9+ (async:false support only works in IE10+)
+ * IE9+ (`async: false` support only works in IE10+)
  * Opera 12+
  * Safari 5+
  * Chrome
